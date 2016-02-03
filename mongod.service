@@ -1,0 +1,19 @@
+[Unit]
+Description=mongodb service file for RHEL7
+After=syslog.target network.target
+
+[Service]
+LimitNOFILE=64000
+LimitNPROC=64000
+User=mongod
+ExecStartPre=-/usr/bin/sh -c '/usr/bin/echo "never" > /sys/kernel/mm/transparent_hugepage/enabled'
+ExecStartPre=-/usr/bin/sh -c '/usr/bin/echo "never" > /sys/kernel/mm/transparent_hugepage/defrag'
+ExecStartPre=-/usr/bin/mkdir -p /var/run/mongodb
+ExecStartPre=-/usr/bin/chown -R mongod:mongod /var/run/mongodb
+PermissionsStartOnly=true
+ExecStart=/usr/bin/mongod -f /etc/mongod.conf
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
